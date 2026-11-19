@@ -1,0 +1,668 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>K12 Hunar — Scholarships</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              forest: "#08775d",
+              ink: "#0d2427",
+              navy: "#17477f",
+            },
+            fontFamily: {
+              sans: ["Inter", "Arial", "sans-serif"],
+            },
+          },
+        },
+      };
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * { box-sizing: border-box; }
+      body { margin: 0; color: #172a2d; font-family: Inter, Arial, sans-serif; }
+      button, input, select { font: inherit; }
+      .hero {
+        position: relative;
+        min-height: 350px;
+        background-position: center 48%;
+        background-size: cover;
+        background-repeat: no-repeat;
+      }
+      .hero-copy { max-width: 760px; }
+      .hero-inner {
+        display: flex; align-items: flex-start; justify-content: space-between;
+        width: 86%; max-width: 1540px; min-height: 350px; margin: 0 auto; padding-top: 64px;
+      }
+      .hero-collage { position: relative; width: 260px; height: 245px; flex: 0 0 260px; margin: 4px 0 0 12px; }
+      .photo-card { position: absolute; width: 138px; height: 122px; padding: 6px; background: white; box-shadow: 0 8px 24px #0005; }
+      .photo-card img { width: 100%; height: 100%; object-fit: cover; }
+      .photo-one { left: 18px; top: 28px; transform: rotate(-5deg); }
+      .photo-two { right: 12px; top: 76px; transform: rotate(7deg); }
+      .enroll-tag { position: absolute; z-index: 2; top: 112px; left: 3px; }
+      .hero-dots { position: absolute; bottom: 11px; left: 50%; display: flex; transform: translateX(-50%); gap: 6px; }
+      .hero-dots button { position: relative; display: grid; width: 14px; height: 14px; place-items: center; border: 0; padding: 0; background: transparent; }
+      .hero-dots button::after { content: ""; width: 7px; height: 7px; border-radius: 50%; background: #ffffff70; }
+      .hero-dots button[aria-current="true"]::after { background: white; }
+      .scholarship-card {
+        min-height: 184px; position: relative; overflow: hidden;
+        border-radius: 20px; color: white; box-shadow: 0 7px 17px #192e4a24;
+      }
+      .card-details {
+        position: absolute; inset: auto 0 0; min-height: 62px; padding: 11px 16px;
+        border-radius: 18px 18px 0 0; background: white; color: #08775d;
+        box-shadow: 0 -7px 18px #091c2630;
+      }
+      .ribbon {
+        position: absolute; right: 14px; top: 0; writing-mode: vertical-rl;
+        padding: 8px 5px 13px; font-size: 9px; font-weight: 700;
+        background: #08775d; border-radius: 0 0 5px 5px;
+      }
+      .upcoming-card { filter: blur(2px); opacity: .86; pointer-events: none; }
+      .why-photo {
+        width: 100%; height: 365px; object-fit: cover; border-radius: 14px;
+      }
+      .mentor-panel { min-height: 365px; position: relative; overflow: hidden; }
+      .mentor-cutout {
+        position: absolute; right: 7%; bottom: -6px; height: 95%;
+        max-width: 36%; object-fit: contain; object-position: bottom;
+      }
+      .faq-row { border: 1px solid #20383b; border-radius: 15px; }
+      .detail-page { min-height: 100vh; background: #f6f8fb; color: #233143; }
+      .detail-shell { width: 90%; max-width: 1180px; margin: 0 auto; padding: 14px 0 28px; }
+      .detail-hero {
+        display: grid; grid-template-columns: minmax(0, 1fr) 370px; gap: 24px;
+        min-height: 255px; padding: 20px; border-radius: 20px; color: white;
+      }
+      .detail-hero-copy { display: flex; flex-direction: column; align-items: flex-start; }
+      .detail-meta { display: flex; gap: 8px; margin-top: auto; }
+      .detail-meta-item { min-width: 112px; border: 1px solid #ffffff95; border-radius: 9px; padding: 8px 10px; font-size: 11px; line-height: 1.25; }
+      .detail-status { display: flex; align-items: center; gap: 10px; border: 1px solid #ffffff90; border-radius: 11px; padding: 10px 12px; }
+      .detail-surface { border: 1px solid #e8edf2; border-radius: 14px; background: white; }
+      .detail-benefits { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .detail-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+      .detail-row { display: flex; align-items: flex-start; gap: 9px; border-bottom: 1px solid #edf0f3; padding: 7px 0; font-size: 12px; line-height: 1.4; }
+      .detail-related { display: flex; gap: 14px; overflow-x: auto; padding: 4px 0 12px; scrollbar-width: thin; }
+      .detail-related-card { flex: 0 0 235px; min-height: 300px; }
+      @media (max-width: 700px) {
+        .hero { min-height: 390px; }
+        .hero-inner { width: 90%; min-height: 390px; padding-top: 48px; }
+        .hero-collage { display: none; }
+        .hero-copy { max-width: 100%; }
+        .mentor-panel { min-height: 440px; }
+        .mentor-cutout { height: 52%; max-width: 60%; right: 4%; }
+        .why-photo { height: 230px; }
+      }
+      @media (max-width: 560px) {
+        .detail-shell { width: calc(100% - 28px); padding-top: 8px; }
+        .detail-hero { grid-template-columns: 1fr; gap: 18px; padding: 16px; }
+        .detail-meta { flex-wrap: wrap; margin-top: 18px; }
+        .detail-columns { grid-template-columns: 1fr; gap: 12px; }
+        .detail-benefits { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script type="text/babel">
+      const { useMemo, useState } = React;
+
+      const scholarships = [
+        {
+          title: "Pre-Matric Scholarship for Students with Disabilities",
+          type: "Central",
+          description: "Support for disabled students to pursue technical education.",
+          color: "#1d3f91",
+          detailKey: "blue",
+        },
+        {
+          title: "LIC Golden Jubilee Scholarship – Special Girl Child Category",
+          type: "Private",
+          description: "Support for girl students to pursue technical education.",
+          color: "#ef59a7",
+          amount: "₹50,000",
+          duration: "1st year",
+          detailKey: "pink",
+        },
+        {
+          title: "Post-Matric Scholarship (BC/EBC)",
+          type: "State",
+          description: "Support for girl students to pursue technical education.",
+          color: "#22a2cf",
+          detailKey: "cyan",
+        },
+        {
+          title: "HDFC Bank Parivartan Educational Crisis Scholarship Support (ECSS)",
+          type: "Private",
+          description: "Financial support for students facing personal or family crises.",
+          color: "#ec59a8",
+          verified: true,
+          detailKey: "pink",
+        },
+        {
+          title: "Post-Matric Scholarship (SC/ST)",
+          type: "State",
+          description: "Financial assistance for post-matric students.",
+          color: "#21a1ce",
+          verified: true,
+          detailKey: "cyan",
+        },
+        {
+          title: "Sitaram Jindal Foundation Scholarship",
+          type: "Merit-Based",
+          description: "Scholarship support for deserving students across India.",
+          color: "#21964f",
+          verified: true,
+          detailKey: "green",
+        },
+      ];
+
+      const questions = [
+        "How do I apply for a scholarship listed on K12 Hunar?",
+        "How do I know if I’m eligible?",
+        "What documents do I need to apply?",
+        "Is there a fee to apply?",
+        "How can I track my application or check the results?",
+        "Can I apply for more than one scholarship?",
+        "Can I apply if I’m from a different state or school board?",
+      ];
+
+      const heroSlides = [
+        {
+          title: "Indus Towers Scholarship Program",
+          action: "ENROLL NOW",
+          image: "https://images.unsplash.com/photo-1509099836639-18ba1795216d?auto=format&fit=crop&w=2000&q=85",
+          position: "center 48%",
+        },
+        {
+          title: "Pradhan Mantri Jan Nidhi YOJANA",
+          action: "APPLY NOW",
+          image: "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=2000&q=85",
+          position: "center 42%",
+        },
+      ];
+
+      const scholarshipDetails = {
+        blue: {
+          color: "#1d3f91",
+          type: "Central",
+          title: "Pre-Matric Scholarship for Students with Disabilities",
+          summary: "Financial support for students with disabilities to pursue higher education.",
+          classLevel: "Classes 9–10",
+          amount: "Up to ₹1,00,000",
+          deadline: "30 Nov, 2026",
+          support: "₹1,00,000",
+          criteria: [
+            "Must be an Indian citizen.",
+            "Minimum 60% aggregate in the last qualifying exam.",
+            "Enrolled or planning to enroll in a recognized UG or PG program (any stream).",
+            "Annual family income should be ≤ ₹8,00,000 per annum.",
+            "Age: 17 to 30 years as of the application deadline.",
+          ],
+          documents: [
+            "Latest Marks Sheet (10th / 12th / UG)",
+            "Income Certificate (≤ ₹8,00,000)",
+            "Aadhaar Card / Other Govt. ID",
+            "Admission Proof (Current / Offer Letter)",
+            "Passport Size Photograph",
+            "Bank Account Details (for scholarship disbursal)",
+          ],
+        },
+        pink: {
+          color: "#ef59a7",
+          type: "Private",
+          title: "LIC Golden Jubilee Scholarship - Special Girl Child Category",
+          summary: "Support for girl students to pursue technical education.",
+          classLevel: "Classes 11–12",
+          amount: "Up to ₹50,000",
+          deadline: "30 Nov, 2026",
+          support: "₹50,000",
+          criteria: [
+            "Must be an Indian citizen.",
+            "Minimum 55% aggregate in the last qualifying examination.",
+            "Enrolled or planning to enroll in a recognized Class 11–12.",
+            "Annual family income should be ≤ ₹4,50,000 per annum.",
+            "Age: 16 to 20 years as of the application deadline.",
+          ],
+          documents: [
+            "Latest Marks Sheet (10th)",
+            "Income Certificate (≤ ₹4,50,000)",
+            "Bonafide Certificate",
+            "Admission Proof",
+            "Proof of Residence",
+            "Bank Account Details (for scholarship disbursal)",
+          ],
+        },
+        cyan: {
+          color: "#22a2cf",
+          type: "State",
+          title: "K12 Hunar Merit Scholarship 2026",
+          summary: "Financial support for talented and deserving students pursuing higher education.",
+          classLevel: "UG / PG",
+          amount: "Up to ₹1,00,000",
+          deadline: "30 Nov, 2026",
+          support: "₹1,00,000",
+          criteria: [
+            "Must be an Indian citizen.",
+            "Minimum 60% aggregate in the last qualifying examination.",
+            "Enrolled or planning to enroll in a recognized UG or PG program.",
+            "Annual family income should be ≤ ₹8,00,000 per annum.",
+            "Age: 17 to 30 years as of the application deadline.",
+          ],
+          documents: [
+            "Latest Marks Sheet (10th / 12th / UG)",
+            "Income Certificate (≤ ₹8,00,000)",
+            "Aadhaar Card / Other Govt. ID",
+            "Admission Proof (Current / Offer Letter)",
+            "Passport Size Photograph",
+            "Bank Account Details (for scholarship disbursal)",
+          ],
+        },
+        green: {
+          color: "#21964f",
+          type: "Merit-Based",
+          title: "Sitaram Jindal Foundation Scholarship",
+          summary: "Scholarship support for deserving students across India.",
+          classLevel: "UG / PG",
+          amount: "Up to ₹50,000",
+          deadline: "30 Nov, 2026",
+          support: "₹50,000",
+          criteria: [
+            "Must be an Indian citizen.",
+            "Must have a good academic record.",
+            "Enrolled or planning to enroll in a recognized school or college.",
+            "Annual family income should meet the scholarship guidelines.",
+            "Meet the age and course requirements for the selected category.",
+          ],
+          documents: [
+            "Latest Marks Sheet",
+            "Income Certificate",
+            "Aadhaar Card / Other Govt. ID",
+            "Admission Proof",
+            "Proof of Residence",
+            "Bank Account Details (for scholarship disbursal)",
+          ],
+        },
+      };
+
+      function Arrow() {
+        return <span aria-hidden="true" className="ml-2 text-lg">→</span>;
+      }
+
+      function ScholarshipCard({ item, upcoming = false, onOpenDetails }) {
+        return (
+          <article className={`scholarship-card ${upcoming ? "upcoming-card" : ""}`} style={{ backgroundColor: item.color }}>
+            <div className="p-4 pb-20">
+              <div className="flex items-start justify-between gap-2 pr-7">
+                <span className="rounded-full border border-white/80 px-3 py-1 text-[10px]">{item.type}</span>
+                {item.verified && <span className="rounded-full bg-white/20 px-2 py-1 text-[10px]">✓ Verified</span>}
+              </div>
+              <h3 className="mt-4 max-w-[330px] text-sm font-bold leading-5">{item.title}</h3>
+              <p className="mt-2 max-w-[320px] text-xs leading-4 text-white/85">{item.description}</p>
+            </div>
+            {item.title.startsWith("Pre-Matric") || item.title.startsWith("LIC") || item.title.startsWith("Post-Matric Scholarship (BC") ? (
+              <span className="ribbon">Featured</span>
+            ) : null}
+            <div className="card-details">
+              {item.amount ? (
+                <div className="mb-2 flex justify-around text-center text-[10px] leading-4 text-slate-700">
+                  <span><b className="block text-xs">{item.amount}</b>per year</span>
+                  <span><b className="block text-xs">{item.duration}</b>Diploma / Degree</span>
+                  <span><b className="block text-xs">2 weeks left</b>15 Nov 2026</span>
+                </div>
+              ) : null}
+              <button
+                className="w-full rounded-lg border border-[#75ad9d] py-2 text-xs font-medium hover:bg-emerald-50"
+                onClick={() => item.detailKey && onOpenDetails?.(item.detailKey)}
+              >
+                View details <Arrow />
+              </button>
+            </div>
+          </article>
+        );
+      }
+
+      function ScholarshipDetailPage({ detail, onOpenDetails, onBack }) {
+        const related = [
+          { title: "Pre-Matric Scholarship for Girls 2026-27", type: "Central", color: "#1d3f91", detailKey: "blue" },
+          { title: "LIC Golden Jubilee Scholarship - Special Girl Child Category", type: "Private", color: "#ef59a7", detailKey: "pink" },
+          { title: "K12 Hunar Merit Scholarship 2026", type: "State", color: "#22a2cf", detailKey: "cyan" },
+          { title: "Sitaram Jindal Foundation Scholarship", type: "Merit-Based", color: "#21964f", detailKey: "green" },
+        ];
+        const benefits = [
+          ["♧", "Financial support", `up to ${detail.support}`],
+          ["▤", "Coverage for", "tuition fees"],
+          ["♧", "Support for", "study materials"],
+          ["◉", "Recognition", "certificate"],
+        ];
+
+        return (
+          <main className="detail-page">
+            <div className="detail-shell">
+              <button
+                type="button"
+                className="mb-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50"
+                onClick={onBack}
+              >
+                ← Back
+              </button>
+              <section className="detail-hero" style={{ backgroundColor: detail.color }}>
+                <div className="detail-hero-copy">
+                  <span className="rounded-full border border-white/80 px-3 py-1 text-[10px]">{detail.type}</span>
+                  <h1 className="mt-3 max-w-[620px] text-xl font-bold leading-tight md:text-3xl">{detail.title}</h1>
+                  <p className="mt-2 max-w-[620px] text-xs leading-5 text-white/90">{detail.summary}</p>
+                  <div className="detail-meta">
+                    <div className="detail-meta-item">♧ &nbsp; {detail.classLevel}</div>
+                    <div className="detail-meta-item">₹ &nbsp; {detail.amount}</div>
+                    <div className="detail-meta-item">▣ &nbsp; Apply by<br />&nbsp;&nbsp;&nbsp; {detail.deadline}</div>
+                  </div>
+                </div>
+                <div className="flex flex-col justify-center gap-3">
+                  <div className="detail-status">
+                    <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-green-500 text-base font-bold">✓</span>
+                    <span><b className="block text-xs">You are Eligible!</b><small className="mt-1 block text-[9px] leading-3 text-white/80">Based on your profile, you meet the scholarship eligibility criteria.</small></span>
+                  </div>
+                  <button className="rounded-lg bg-white px-4 py-2 text-sm font-semibold text-emerald-800">
+                    Apply now <span className="ml-2">↗</span>
+                    <small className="block text-[9px] font-normal text-slate-500">Redirected to official scholarship website</small>
+                  </button>
+                </div>
+              </section>
+
+              <section className="detail-surface mt-3 px-5 py-4">
+                <h2 className="text-sm font-bold">About the Scholarship</h2>
+                <p className="mt-2 text-xs leading-5 text-slate-500">
+                  The K12 Hunar Merit Scholarship 2026 aims to recognize and support academically bright and financially deserving students by providing financial assistance for their higher education in reputed institutions across India.
+                </p>
+              </section>
+
+              <section className="detail-surface mt-3 overflow-hidden">
+                <h2 className="border-b border-slate-100 px-5 py-3 text-sm font-bold">☉ &nbsp; Benefits</h2>
+                <div className="detail-benefits px-3 py-4">
+                  {benefits.map(([icon, label, caption]) => (
+                    <div className="flex flex-col items-center px-2 text-center" key={label}>
+                      <span className="grid h-9 w-9 place-items-center rounded-lg bg-amber-50 text-amber-600">{icon}</span>
+                      <span className="mt-2 text-[10px] leading-3 text-slate-600">{label}<br />{caption}</span>
+                    </div>
+                  ))}
+                </div>
+              </section>
+
+              <div className="detail-columns mt-3">
+                <section className="detail-surface overflow-hidden">
+                  <h2 className="border-b border-slate-100 px-5 py-3 text-sm font-bold">♧ &nbsp; Eligibility Criteria</h2>
+                  <ul className="px-5 py-2">
+                    {detail.criteria.map((criterion) => (
+                      <li className="detail-row" key={criterion}>
+                        <span className="mt-px grid h-4 w-4 shrink-0 place-items-center rounded-full bg-slate-700 text-[9px] text-white">✓</span>
+                        <span>{criterion}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+                <section className="detail-surface overflow-hidden">
+                  <h2 className="border-b border-slate-100 px-5 py-3 text-sm font-bold">▣ &nbsp; Prepare Documents</h2>
+                  <p className="px-5 pt-2 text-[10px] text-slate-500">Keep these documents ready before applying.</p>
+                  <ul className="px-5 pb-2">
+                    {detail.documents.map((document, index) => (
+                      <li className="detail-row" key={document}>
+                        <span className={`mt-px grid h-4 w-4 shrink-0 place-items-center rounded-sm border ${index < 2 ? "border-slate-700 bg-slate-700 text-white" : "border-slate-300 text-transparent"}`}>✓</span>
+                        <span>{document}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              </div>
+
+              <h2 className="mt-6 px-3 text-sm font-bold text-slate-600">Other Scholarships</h2>
+              <div className="detail-related mt-3">
+                {related.map((item) => (
+                  <article className="detail-related-card scholarship-card" style={{ backgroundColor: item.color }} key={item.title + item.type}>
+                    <div className="p-4 pb-20">
+                      <span className="rounded-full border border-white/80 px-3 py-1 text-[9px]">{item.type}</span>
+                      <h3 className="mt-4 text-sm font-bold leading-5">{item.title}</h3>
+                      <p className="mt-2 text-[10px] leading-4 text-white/85">Support for students to pursue higher education.</p>
+                    </div>
+                    <div className="card-details">
+                      <div className="mb-2 flex justify-around text-center text-[9px] leading-3 text-slate-700">
+                        <span><b className="block">₹50,000</b>per year</span>
+                        <span><b className="block">1st year</b>Diploma / Degree</span>
+                        <span><b className="block">2 weeks left</b>15 Nov 2026</span>
+                      </div>
+                      <button className="w-full rounded-lg border border-[#75ad9d] py-2 text-[10px]" onClick={() => onOpenDetails(item.detailKey)}>
+                        View details <Arrow />
+                      </button>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </div>
+          </main>
+        );
+      }
+
+      function App() {
+        const [search, setSearch] = useState("");
+        const [category, setCategory] = useState("");
+        const [openQuestion, setOpenQuestion] = useState(-1);
+        const [heroSlide, setHeroSlide] = useState(1);
+        const [selectedDetail, setSelectedDetail] = useState(() => {
+          const detailKey = window.location.hash.replace("#scholarship-", "");
+          return scholarshipDetails[detailKey] ? detailKey : null;
+        });
+        const activeHero = heroSlides[heroSlide];
+        const openDetails = (detailKey) => {
+          if (!scholarshipDetails[detailKey]) return;
+          window.history.pushState({ detailKey }, "", `#scholarship-${detailKey}`);
+          setSelectedDetail(detailKey);
+          window.scrollTo(0, 0);
+        };
+        const backToPreviousPage = () => {
+          if (window.history.state?.detailKey) {
+            window.history.back();
+            return;
+          }
+          window.history.replaceState(null, "", window.location.pathname);
+          setSelectedDetail(null);
+          window.scrollTo(0, 0);
+        };
+        React.useEffect(() => {
+          const handleHistory = () => setSelectedDetail(window.history.state?.detailKey || null);
+          window.addEventListener("popstate", handleHistory);
+          return () => window.removeEventListener("popstate", handleHistory);
+        }, []);
+        const visibleScholarships = useMemo(() => scholarships.filter((item) => {
+          const matchesSearch = `${item.title} ${item.description}`.toLowerCase().includes(search.toLowerCase());
+          return matchesSearch && (!category || item.type === category);
+        }), [search, category]);
+
+        if (selectedDetail) {
+          return <ScholarshipDetailPage detail={scholarshipDetails[selectedDetail]} onOpenDetails={openDetails} onBack={backToPreviousPage} />;
+        }
+
+        return (
+          <main className="w-full overflow-hidden">
+            <section
+              className="hero text-white"
+              style={{
+                backgroundImage: `linear-gradient(rgba(0, 0, 0, .48), rgba(0, 0, 0, .48)), url("${activeHero.image}")`,
+                backgroundPosition: activeHero.position,
+              }}
+            >
+              <div className="hero-inner">
+                <div className="hero-copy">
+                  <span className="inline-flex rounded-full border border-white/80 px-4 py-1.5 text-sm font-medium">Featured</span>
+                  <h1 className="mt-4 text-[30px] font-bold leading-tight md:text-[34px]">{activeHero.title}</h1>
+                  <p className="mt-2 max-w-[650px] text-sm leading-5 text-white/90">
+                    Search verified opportunities and narrow them by your class, location, background, and course. Zero spam, 100% verified application channels.
+                  </p>
+                  <button className={`mt-7 h-[50px] w-[200px] rounded-xl bg-emerald-700 text-sm font-semibold ${heroSlide === 0 ? "border-2 border-white" : ""} hover:bg-emerald-800`}>
+                    {activeHero.action}
+                  </button>
+                </div>
+                {heroSlide === 1 && (
+                  <div className="hero-collage" aria-hidden="true">
+                    <span className="absolute left-12 top-1 text-2xl">♧ ♟ ✎</span>
+                    <div className="photo-card photo-one">
+                      <img src="https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=500&q=80" alt="" />
+                    </div>
+                    <div className="photo-card photo-two">
+                      <img src="https://images.unsplash.com/photo-1509099836639-18ba1795216d?auto=format&fit=crop&w=500&q=80" alt="" />
+                    </div>
+                    <span className="enroll-tag rounded-sm bg-emerald-700 px-2 py-2 text-xs font-bold">Enroll<br />NOW</span>
+                  </div>
+                )}
+              </div>
+              <div className="hero-dots" aria-label="Scholarship slides">
+                {heroSlides.map((slide, index) => (
+                  <button
+                    key={slide.title}
+                    type="button"
+                    aria-label={`Show slide ${index + 1}`}
+                    aria-current={heroSlide === index}
+                    onClick={() => setHeroSlide(index)}
+                  />
+                ))}
+              </div>
+            </section>
+
+            <section className="bg-white px-5 pb-12 pt-10 md:px-10">
+              <div className="mx-auto max-w-[1180px]">
+                <h2 className="text-center text-3xl font-semibold text-[#163333] md:text-[38px]">Find the right project for you</h2>
+                <form className="mx-auto mt-5 flex max-w-[820px] items-center rounded-full border border-slate-200 bg-white p-2 shadow-[0_8px_24px_#193e4c12]" onSubmit={(e) => e.preventDefault()}>
+                  <input
+                    className="min-w-0 flex-1 bg-transparent px-5 text-sm outline-none placeholder:text-slate-400"
+                    placeholder="Search mentors, skills, subjects or project topics..."
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                  />
+                  <button className="rounded-full bg-emerald-700 px-8 py-3 text-sm font-semibold text-white hover:bg-emerald-800">Search</button>
+                </form>
+
+                <div className="mt-7 flex flex-wrap items-center gap-4">
+                  <span className="font-semibold text-emerald-800">Filters ⚙</span>
+                  {["Standard / Class", "Scholarship Type", "Gender", "State"].map((label, index) => (
+                    <select
+                      key={label}
+                      aria-label={label}
+                      className="min-w-[155px] flex-1 rounded-full border border-slate-200 bg-white px-4 py-3 text-xs text-slate-700 outline-none"
+                      value={index === 1 ? category : undefined}
+                      onChange={index === 1 ? (e) => setCategory(e.target.value) : undefined}
+                    >
+                      {index === 1 ? (
+                        <>
+                          <option value="">Scholarship Type</option>
+                          <option>Central</option><option>Private</option><option>State</option><option>Merit-Based</option>
+                        </>
+                      ) : (
+                        <>
+                          <option>{label}</option>
+                          {(index === 0 ? ["Class 9–10", "Class 11–12", "Undergraduate"] : index === 2 ? ["Any", "Girl", "Boy"] : ["Any state", "Delhi", "Maharashtra", "Uttar Pradesh"]).map((option) => <option key={option}>{option}</option>)}
+                        </>
+                      )}
+                    </select>
+                  ))}
+                </div>
+
+                <div className="mt-14 grid gap-4 md:grid-cols-3">
+                  {visibleScholarships.map((item) => <ScholarshipCard item={item} key={item.title} onOpenDetails={openDetails} />)}
+                  {!visibleScholarships.length && <p className="col-span-full py-8 text-center text-sm text-slate-500">No scholarships found.</p>}
+                </div>
+                <h3 className="mt-12 text-lg font-medium text-slate-600">Upcoming Scholarships</h3>
+                <div className="mt-5 grid gap-4 md:grid-cols-3">
+                  {scholarships.slice(0, 3).map((item) => <ScholarshipCard item={item} key={`upcoming-${item.title}`} upcoming />)}
+                </div>
+              </div>
+            </section>
+
+            <section className="bg-white px-5 pb-16 pt-6 text-center md:px-10">
+              <div className="mx-auto max-w-[1180px]">
+                <span className="rounded-full border border-slate-400 px-4 py-1 text-[10px] text-slate-600">Why K12 Hunar?</span>
+                <h2 className="mt-3 text-3xl font-bold text-slate-600 md:text-[38px]">One Place. One Step Closer.</h2>
+                <p className="mx-auto mt-4 max-w-[1100px] text-sm leading-6 text-slate-500">
+                  Maybe you dream of becoming a doctor, an engineer, or something the world hasn’t seen yet. But sometimes, the biggest challenge isn’t dreaming big — it’s finding the support to get there. That’s where the right scholarship can make a difference. From school to higher education, opportunities are waiting to be discovered. Because your circumstances shouldn’t decide how far your dreams can take you.
+                </p>
+                <img
+                  className="why-photo mt-6"
+                  src="https://images.unsplash.com/photo-1523580494863-6f3031224c94?auto=format&fit=crop&w=1800&q=85"
+                  alt="Graduates celebrating together"
+                />
+              </div>
+            </section>
+
+            <section className="mentor-panel bg-[#194981] px-6 py-16 text-white md:px-12">
+              <div className="mx-auto flex h-full max-w-[1180px] items-center">
+                <div className="relative z-10 max-w-[720px]">
+                  <span className="rounded-full border border-white/70 px-4 py-1 text-xs">Guidance • Growth • Support</span>
+                  <h2 className="mt-5 text-3xl font-extrabold leading-tight md:text-[40px]">You don't have to figure it all out alone.</h2>
+                  <p className="mt-4 max-w-[690px] text-sm leading-6 text-white/90">
+                    The right guidance can make your journey easier. Connect with mentors who can help you explore opportunities, make informed academic decisions and move closer to your goals.
+                  </p>
+                  <button className="mt-7 rounded-lg bg-white px-6 py-3 text-sm font-semibold text-emerald-800">Explore Mentorship <Arrow /></button>
+                </div>
+                <div className="absolute bottom-8 right-[8%] h-48 w-48 rounded-full bg-amber-400 md:h-60 md:w-60" aria-hidden="true"></div>
+                <img
+                  className="mentor-cutout"
+                  src="https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=700&q=85"
+                  alt=""
+                />
+                <div className="absolute bottom-8 right-[7%] h-12 w-[240px] rotate-[7deg] rounded-xl bg-amber-400 md:w-[320px]" aria-hidden="true"></div>
+              </div>
+            </section>
+
+            <section className="bg-[#0d2427] px-5 py-10 text-white md:px-10 md:py-12">
+              <div className="mx-auto max-w-[1140px]">
+                <div className="text-center">
+                  <span className="rounded-full border border-white/70 px-4 py-1 text-[10px]">Frequently Asked Questions</span>
+                  <h2 className="mt-3 text-2xl font-bold md:text-[30px]">Common Questions</h2>
+                  <p className="mt-2 text-xs text-white/80">Quick answers to clear doubts before you start shortlisting.</p>
+                </div>
+                <div className="mt-12 space-y-2">
+                  {questions.map((question, index) => (
+                    <div className="faq-row" key={question}>
+                      <button
+                        className="flex w-full items-center justify-between px-5 py-4 text-left text-sm text-white/90"
+                        aria-expanded={openQuestion === index}
+                        onClick={() => setOpenQuestion(openQuestion === index ? -1 : index)}
+                      >
+                        {question}<span className="ml-4 text-lg">{openQuestion === index ? "−" : "+"}</span>
+                      </button>
+                      {openQuestion === index && (
+                        <p className="px-5 pb-4 text-sm leading-6 text-white/70">
+                          Check the scholarship details for eligibility and required documents, then apply through the verified application channel listed.
+                        </p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </section>
+
+            <section className="bg-[#08765d] px-5 py-20 text-center text-white md:py-24">
+              <span className="rounded-full border border-white/90 px-5 py-2 text-xs">For Providers</span>
+              <h2 className="mx-auto mt-7 max-w-[1050px] text-3xl font-extrabold leading-tight md:text-[56px]">List a scholarship with K12 Hunar</h2>
+              <p className="mx-auto mt-5 max-w-[780px] text-sm leading-6 text-white/90 md:text-lg">
+                Share verified opportunities with high-potential students and families who are actively searching for funding support across India and beyond.
+              </p>
+              <button className="mt-10 rounded-lg bg-white px-8 py-4 font-semibold text-emerald-800 shadow-lg">Partner with Us <Arrow /></button>
+            </section>
+          </main>
+        );
+      }
+
+      ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+    </script>
+  </body>
+</html>
